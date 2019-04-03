@@ -1,12 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
 	"image/png"
 	"log"
 	"os"
+	"sort"
+
+	"gopkg.in/go-playground/colors.v1"
 )
 
 func main() {
@@ -35,14 +39,37 @@ func colorize(img image.Image) {
 	draw.Draw(b, b.Bounds(), img, image.ZP, draw.Src)
 	// var m map[color.RGBA]uint32
 
-	m := make(map[color.RGBA]uint32)
+	m := make(map[color.Color]uint32)
 
 	for x := 0; x < b.Bounds().Dx(); x++ {
 		for y := 0; y < b.Bounds().Dy(); y++ {
 			// log.Println(b.At(x, y).(color.RGBA))
-			xx := b.At(x, y).(color.RGBA)
+			xx := b.At(x, y)
 			m[xx] = m[xx] + 1
 		}
 	}
-	log.Println(m)
+
+	type kv struct {
+		Key   color.Color
+		Value uint32
+	}
+
+	var ss []kv
+	for k, v := range m {
+		ss = append(ss, kv{k, v})
+	}
+
+	sort.Slice(ss, func(i, j int) bool {
+		return ss[i].Value > ss[j].Value
+	})
+
+	for _, kv := range ss {
+		fmt.Printf("%s %d\n", colorHex(kv.Key), kv.Value)
+	}
+}
+
+func colorHex(c color.Color) string {
+	newColor := colors.FromStdColor(c)
+	return newColor.ToHEX().String()
+	// return c.(color.RGBAColor).ToHex() //"#" + fmt.Sprintf("%x", c.R.(int)*c.G.(int)*c.B.(int)) // + fmt.Sprintf("%x", c.G) + fmt.Sprintf("%x", c.B)
 }
