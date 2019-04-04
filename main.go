@@ -2,15 +2,12 @@ package main
 
 import (
 	"fmt"
-	"image"
-	"image/color"
-	"image/draw"
 	"image/png"
 	"log"
 	"os"
-	"sort"
 
-	"gopkg.in/go-playground/colors.v1"
+	"./pixelcountapp"
+	colors "gopkg.in/go-playground/colors.v1"
 )
 
 func main() {
@@ -31,42 +28,9 @@ func main() {
 		panic("conldn't decode file")
 	}
 
-	colorize(src)
-}
+	pixels := pixelcountapp.ProcessImage(src)
 
-func colorize(img image.Image) {
-	b := image.NewRGBA(img.Bounds())
-	draw.Draw(b, b.Bounds(), img, image.ZP, draw.Src)
-
-	m := make(map[color.Color]uint32)
-
-	for x := 0; x < b.Bounds().Dx(); x++ {
-		for y := 0; y < b.Bounds().Dy(); y++ {
-			xx := b.At(x, y)
-			m[xx] = m[xx] + 1
-		}
+	for _, pixel := range pixels {
+		fmt.Printf("%s %d\n", colors.FromStdColor(pixel.PixelColor).ToHEX().String(), pixel.PixelCount)
 	}
-
-	type kv struct {
-		Key   color.Color
-		Value uint32
-	}
-
-	var ss []kv
-	for k, v := range m {
-		ss = append(ss, kv{k, v})
-	}
-
-	sort.Slice(ss, func(i, j int) bool {
-		return ss[i].Value > ss[j].Value
-	})
-
-	for _, kv := range ss {
-		fmt.Printf("%s %d\n", colorHex(kv.Key), kv.Value)
-	}
-}
-
-func colorHex(c color.Color) string {
-	newColor := colors.FromStdColor(c)
-	return newColor.ToHEX().String()
 }
