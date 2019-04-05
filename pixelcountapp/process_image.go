@@ -7,7 +7,7 @@ import (
 	"sort"
 )
 
-// ProcessImage hello, I am your comment
+// ProcessImage takes image.Image object and returns pixel counts
 func ProcessImage(img image.Image) []PixelInfo {
 	b := image.NewRGBA(img.Bounds())
 	draw.Draw(b, b.Bounds(), img, image.ZP, draw.Src)
@@ -33,8 +33,8 @@ func ProcessImage(img image.Image) []PixelInfo {
 	return ss
 }
 
-// PixelInfo blah blah
+// PixelInfo represents a count of pixels of that color
 type PixelInfo struct {
-	PixelColor color.Color
-	PixelCount uint32
+	PixelColor color.Color `json:"color"`
+	PixelCount uint32      `json:"count"`
 }
