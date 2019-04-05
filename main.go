@@ -12,6 +12,15 @@ import (
 
 func main() {
 	m := mux.NewRouter()
+	m.HandleFunc("/app", func(w http.ResponseWriter, r *http.Request) {
+		file, err := localfiles.LookupImage("bp")
+		if err != nil {
+			respondWithError(w, http.StatusBadRequest, "sad!")
+		}
+		pixelData := pixelcountapp.ProcessImage(file)
+		pixelCount := pixelcountapp.TotalPixelsInImage(file)
+		respondWithJSON(w, http.StatusOK, ConvertToJSON(pixelData, pixelCount))
+	})
 	m.HandleFunc("/app/{filename}", func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		file, err := localfiles.LookupImage(vars["filename"])
