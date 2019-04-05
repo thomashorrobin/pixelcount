@@ -10,7 +10,7 @@ To run `./pixelcount`
 
 `http://localhost:8080/app/bp`
 
-`http://localhost:8080/app/bp`
+`http://localhost:8080/app/xero`
 
 ## add your own logo
 
