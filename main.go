@@ -45,7 +45,10 @@ type PixelInfoJSON struct {
 func ConvertToJSON(pixels []pixelcountapp.PixelInfo, totalPixels uint) []PixelInfoJSON {
 	var exportablePixels []PixelInfoJSON
 	for _, pixel := range pixels {
-		exportablePixels = append(exportablePixels, PixelInfoJSON{Color: colors.FromStdColor(pixel.PixelColor).ToHEX().String(), Count: pixel.PixelCount, Percent: 100 * float32(pixel.PixelCount) / float32(totalPixels)})
+		percentage := 100 * float32(pixel.PixelCount) / float32(totalPixels)
+		if percentage >= 1 {
+			exportablePixels = append(exportablePixels, PixelInfoJSON{Color: colors.FromStdColor(pixel.PixelColor).ToHEX().String(), Count: pixel.PixelCount, Percent: percentage})
+		}
 	}
 	return exportablePixels
 }
