@@ -12,8 +12,9 @@ import (
 
 func main() {
 	m := mux.NewRouter()
-	m.HandleFunc("/app", func(w http.ResponseWriter, r *http.Request) {
-		file, err := localfiles.LookupImage("bp")
+	m.HandleFunc("/app/{filename}", func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		file, err := localfiles.LookupImage(vars["filename"])
 		if err != nil {
 			respondWithError(w, http.StatusBadRequest, "sad!")
 		}
