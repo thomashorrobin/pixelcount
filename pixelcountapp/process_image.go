@@ -35,6 +35,12 @@ func ProcessImage(img image.Image) []PixelInfo {
 
 // PixelInfo represents a count of pixels of that color
 type PixelInfo struct {
-	PixelColor color.Color `json:"color"`
-	PixelCount uint32      `json:"count"`
+	PixelColor color.Color
+	PixelCount uint32
+}
+
+// TotalPixelsInImage uhisbsdc
+func TotalPixelsInImage(img image.Image) uint {
+	rec := img.Bounds()
+	return uint(rec.Dx()) * uint(rec.Dy())
 }
